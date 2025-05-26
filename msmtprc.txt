@@ -1,0 +1,15 @@
+defaults
+auth on
+tls on
+tls_starttls on
+logfile ~/.msmtp.log
+
+account gmail
+host smtp.gmail.com
+port 587
+from luis.dvlp.03@gmail.com
+user luis.dvlp.03@gmail.com
+password AppPassword
+
+account default : gmail
+

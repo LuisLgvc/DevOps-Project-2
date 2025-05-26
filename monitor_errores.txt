@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Ruta del log de acceso de Apache
+ACCESS_LOG="/var/log/apache2/access.log"
+
+# Umbral de errores para generar alerta
+THRESHOLD=10
+
+# Intervalo simulado (informativo)
+INTERVAL=60
+
+# Dirección de correo destino
+EMAIL="luis.dvlp.03@gmail.com"
+
+# Contar cuántas veces aparecen errores en las últimas 100 líneas del log de acceso
+COUNT=$(tail -n 100 "$ACCESS_LOG" | grep "[error\]" | wc -l)
+
+echo "Errores encontrados: $COUNT"
+
+if [ "$COUNT" -gt "$THRESHOLD" ]; then
+    SUBJECT="⚠️ Alerta de Errores en Apache"
+    MESSAGE="ALERTA 🚨: Se detectaron $COUNT errores en los últimos $INTERVAL segundos."
+
+    echo "$MESSAGE" | mail -s "$SUBJECT" "$EMAIL"
+    echo "$(date "+%Y-%m-%d %H:%M:%S") - $MESSAGE" | sudo tee -a /var/log/apache_error_monitor.log
+else
+    echo "No se alcanzó el umbral de errores ($THRESHOLD). No se envía correo."
+fi
